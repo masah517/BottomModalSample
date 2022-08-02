@@ -21,6 +21,7 @@ class RefineDialogContainerView @JvmOverloads constructor(
             modifier = Modifier,
             modalDismissCallBack = this.modalDismissCallback,
         )
+        //RefineScaffoldDialogScreen()
     }
 
     //  By default, Compose uses the DisposeOnDetachedFromWindow strategy (確認のためだけにこのメソッド書いています)
