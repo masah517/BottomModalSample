@@ -6,10 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.masa.refinesearchexample.data.RefineParameterRepository
 import com.masa.refinesearchexample.presentation.model.RefineParametersUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,26 +15,34 @@ class SearchResultViewModel @Inject constructor(
     repository: RefineParameterRepository,
 ) : ViewModel() {
 
-    //private val _uiState = MutableStateFlow(RefineParametersUiState.EMPTY)
-    lateinit var uiState: RefineParametersUiState
+    private val _uiState = MutableStateFlow(RefineParametersUiState.EMPTY)
+    val uiState: StateFlow<RefineParametersUiState> = _uiState
 
     init {
-        //repository.updateParameters(RefineParametersUiState.EMPTY)
+        Log.d("MyMsg", "---SearchResultViewModel ${hashCode()} Initialized---")
 
         viewModelScope.launch {
-            repository.uiState.collectLatest {
-                uiState = it
-            }
+            repository.uiState.onEach {
+                Log.d("MyMsg", "---SearchResultViewModel Emit $it---")
+                update(it)
+            }.launchIn(viewModelScope)
         }
     }
 
+    fun loadItems() {}
+
     fun search() {
-        Log.d("MyMsg", "Searching with parameters ${uiState}")
+        Log.d("MyMsg", "Searching with parameters ${uiState.value}")
+    }
+
+    private fun update(refineParametersUiState: RefineParametersUiState){
+        _uiState.update {
+            refineParametersUiState
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d("MyMsg", "SearchResultViewModel Cleared")
-
+        Log.d("MyMsg", "---SearchResultViewModel ${hashCode()} Cleared---")
     }
 }

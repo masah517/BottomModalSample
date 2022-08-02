@@ -6,16 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.masa.refinesearchexample.presentation.RefineDialogContainerView
 import com.masa.refinesearchexample.databinding.FragmentSearchResultBinding
+import com.masa.refinesearchexample.presentation.RefineDialogContainerView
 import com.masa.refinesearchexample.presentation.viewmodel.SearchResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SearchResultFragment : Fragment() {
@@ -40,9 +37,11 @@ class SearchResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.loadItems()
+
         binding.addButton.setOnClickListener {
             parentFragmentManager.commit {
-                add<SearchResultFragment>(R.id.fragmentContainer)
+                replace<SearchResultFragment>(R.id.fragmentContainer)
             }
         }
 
